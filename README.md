@@ -1,1 +1,1 @@
-https://sheltered-shore-33149.herokuapp.com/api/persons
+https://sheltered-shore-33149.herokuapp.com/
