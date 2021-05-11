@@ -28,7 +28,9 @@ app.get('/api/persons', (request, response) => {
 });
 
 app.get('/info', (request, response) => {
-	console.log('not implemented');
+	response.send(
+		`<p>Phonebook has info from MongoDb people database</p> <p>${Date()}</p>`
+	);
 });
 
 app.get('/api/persons/:id', (request, response) => {
@@ -45,23 +47,20 @@ app.delete('/api/persons/:id', (request, response) => {
 });
 
 app.post('/api/persons', (request, response) => {
-	const person = request.body;
+	const body = request.body;
 
-	if (!person.name || !person.number) {
-		response.status(400).send({
-			error: 'Missiang either Name or number',
-		});
+	if (body.name === undefined) {
+		return response.status(400).json({ error: 'content missing' });
 	}
-	if (persons.find((item) => item.name === person.name)) {
-		response.status(400).send({
-			error: 'That Person already exists',
-		});
-	}
-	person.id = Math.floor(Math.random() * 100) + 4;
 
-	persons = persons.concat(person);
+	const person = new Person({
+		name: body.name,
+		number: body.number,
+	});
 
-	response.json(person);
+	person.save().then((savedPerson) => {
+		response.json(savedPerson);
+	});
 });
 
 const PORT = process.env.PORT;
